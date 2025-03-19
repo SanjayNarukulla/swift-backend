@@ -1,5 +1,4 @@
 import { connectDB } from "./db";
-import axios from "axios";
 import { User, Post, Comment } from "./models";
 
 export async function loadData() {
@@ -14,14 +13,20 @@ export async function loadData() {
 
     console.log("Fetching data from JSONPlaceholder...");
     const [usersRes, postsRes, commentsRes] = await Promise.all([
-      axios.get<User[]>("https://jsonplaceholder.typicode.com/users"),
-      axios.get<Post[]>("https://jsonplaceholder.typicode.com/posts"),
-      axios.get<Comment[]>("https://jsonplaceholder.typicode.com/comments"),
+      fetch("https://jsonplaceholder.typicode.com/users").then((res) =>
+        res.json()
+      ),
+      fetch("https://jsonplaceholder.typicode.com/posts").then((res) =>
+        res.json()
+      ),
+      fetch("https://jsonplaceholder.typicode.com/comments").then((res) =>
+        res.json()
+      ),
     ]);
 
-    const users = usersRes.data;
-    const posts = postsRes.data;
-    const comments = commentsRes.data;
+    const users = usersRes as User[];
+    const posts = postsRes as Post[];
+    const comments = commentsRes as Comment[];
 
     console.log(
       `Fetched ${users.length} users, ${posts.length} posts, and ${comments.length} comments.`
